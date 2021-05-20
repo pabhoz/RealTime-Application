@@ -8,6 +8,25 @@
     <link rel="stylesheet" href="public/css/main.css">
 </head>
 <body>
+    <script>
+        const storage = window.localStorage;
+          if (!storage) {
+            alert("Se require un navegador que soporte Local Storage");
+            goToLogin();
+          }
+        const sessionUsername = localStorage.getItem('username');
+  
+        function checkUser(){
+          if (!sessionUsername) {
+            goToLogin();
+          }
+        }
+  
+        function goToLogin() {
+          window.location.href = "./login";
+        }
+        checkUser();
+      </script>
     <header>
         <marquee>
             #SOSColombia
@@ -38,6 +57,9 @@
         const usersArea = document.getElementById("users");
         const channels = document.getElementById("channels");
 
+        username.value = sessionUsername;
+        updateUsername();
+
         socket.on('published-msg', (msg) => {
             const li = document.createElement("li");
             li.innerText = `${msg.author} dijo: ${msg.content}`;
@@ -60,7 +82,6 @@
             const usersIds = Object.keys(users);
             usersIds.forEach((userId) => {
                 const oldUser = document.querySelector("#u-"+userId);
-                console.log(oldUser);
                 if (oldUser) {
                     const name = users[userId].username == "" ? "Guest" : users[userId].username;
                     oldUser.innerText = name;
